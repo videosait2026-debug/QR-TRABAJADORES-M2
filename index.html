@@ -377,14 +377,14 @@ const LS = {
 let B = { app: {}, areas: [], paises: [], hayAdmin: false, error: '' };
 let APP = { empresa: '', logo: '', zona: 'America/La_Paz', locale: 'es-BO' };
 
-function ico(id, cls) { return `<svg class="i cls||''"aria-hidden="true"><usehref="#i-{id}"/></svg>`; }
+function ico(id, cls) { return `<svg class="i ${cls || ''}" aria-hidden="true"><use href="#i-${id}"/></svg>`; }
 function iniciales(n) { return String(n || '?').trim().split(/\s+/).slice(0, 2).map(x => x[0] || '').join('').toUpperCase() || '?'; }
 const PAL = ['#151A56', '#2A3190', '#0E7490', '#7C3AED', '#BE185D', '#B45309', '#15803D', '#1D4ED8', '#9333EA', '#0F766E'];
 function colorDe(s) { let h = 0; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) >>> 0; return PAL[h % PAL.length]; }
-function av(n) { return `<span class="av" style="background:colorDe(n)">{esc(iniciales(n))}</span>`; }
+function av(n) { return `<span class="av" style="background:${colorDe(n)}">${esc(iniciales(n))}</span>`; }
 function logoHtml(cls) {
-  return APP.logo ? `<div class="cls"data-logo="1"><imgsrc="{esc(APP.logo)}" alt="Logo de ${esc(APP.empresa || 'la empresa')}"></div>`
-    : `<div class="cls"data-logo="1">{esc(iniciales(APP.empresa || 'A Q'))}</div>`;
+  return APP.logo ? `<div class="${cls}" data-logo="1"><img src="${esc(APP.logo)}" alt="Logo de ${esc(APP.empresa || 'la empresa')}"></div>`
+    : `<div class="${cls}" data-logo="1">${esc(iniciales(APP.empresa || 'A Q'))}</div>`;
 }
 function rise(r) { $$('.rise', r).forEach((el, i) => el.style.setProperty('--d', Math.min(i, 12) * 40 + 'ms')); }
 let toastT = 0;
@@ -473,7 +473,7 @@ function sheet(title, body, foot, onMount) {
   closeSheet(true);
   const w = document.createElement('div');
   w.className = 'sheet-wrap';
-  w.innerHTML = `<div class="scrim"></div><div class="sheet" role="dialog" aria-modal="true" aria-label="esc(title)"><divclass="grab"></div><divclass="sh-h"><h3>{esc(title)}</h3><button class="ibtn" data-x aria-label="Cerrar">ico('x')</button></div><divclass="sh-b">{body}</div>${foot ? `<div class="sh-f">${foot}</div>` : ''}</div>`;
+  w.innerHTML = `<div class="scrim"></div><div class="sheet" role="dialog" aria-modal="true" aria-label="${esc(title)}"><div class="grab"></div><div class="sh-h"><h3>${esc(title)}</h3><button class="ibtn" data-x aria-label="Cerrar">${ico('x')}</button></div><div class="sh-b">${body}</div>${foot ? `<div class="sh-f">${foot}</div>` : ''}</div>`;
   document.body.appendChild(w); sheetEl = w;
   requestAnimationFrame(() => requestAnimationFrame(() => w.classList.add('show')));
   $('.scrim', w).onclick = () => closeSheet();
@@ -496,7 +496,7 @@ function confirmar(titulo, texto, etiqueta, peligro) {
   return new Promise(res => {
     let listo = false;
     const w = sheet(titulo, `<p class="muted" style="margin:0">${esc(texto)}</p>`,
-      `<button class="btn btn-tonal" data-no>Cancelar</button><button class="btn peligro?'btn-danger':'btn-primary'"data-si>{esc(etiqueta || 'Aceptar')}</button>`);
+      `<button class="btn btn-tonal" data-no>Cancelar</button><button class="btn ${peligro ? 'btn-danger' : 'btn-primary'}" data-si>${esc(etiqueta || 'Aceptar')}</button>`);
     w._onClose = () => { if (!listo) { listo = true; res(false); } };
     $('[data-no]', w).onclick = () => closeSheet();
     $('[data-si]', w).onclick = () => { listo = true; res(true); closeSheet(); };
@@ -508,9 +508,9 @@ const ILL = {
   qr: `<svg class="ill" viewBox="0 0 160 130" aria-hidden="true"><circle cx="80" cy="64" r="58" fill="#EEF0FB"/><rect x="50" y="18" width="60" height="98" rx="12" fill="#fff" stroke="#C7CBEF" stroke-width="3"/><rect x="60" y="34" width="40" height="40" rx="6" fill="#E3E6F8"/><path d="M66 40h8v8h-8zM86 40h8v8h-8zM66 60h8v8h-8zM84 58h4v4h-4zM90 64h4v4h-4z" fill="#151A56"/><rect x="62" y="86" width="36" height="6" rx="3" fill="#E3E6F8"/><circle cx="114" cy="98" r="16" fill="#16A34A"/><path d="m107 98 5 5 9-10" stroke="#fff" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
   empty: `<svg class="ill" viewBox="0 0 160 120" aria-hidden="true"><ellipse cx="80" cy="106" rx="56" ry="8" fill="#EEF0FB"/><rect x="40" y="20" width="80" height="78" rx="14" fill="#fff" stroke="#C7CBEF" stroke-width="3"/><rect x="52" y="36" width="56" height="8" rx="4" fill="#E3E6F8"/><rect x="52" y="52" width="40" height="8" rx="4" fill="#E3E6F8"/><rect x="52" y="68" width="48" height="8" rx="4" fill="#E3E6F8"/><circle cx="118" cy="28" r="12" fill="#151A56"/><path d="M118 22v7l4 3" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>`
 };
-function vacio(titulo, texto, accion) { return `<div class="empty">ILL.empty<b>{esc(titulo)}</b><span>esc(texto)</span>{accion ? '<div style="margin-top:14px">' + accion + '</div>' : ''}</div>`; }
+function vacio(titulo, texto, accion) { return `<div class="empty">${ILL.empty}<b>${esc(titulo)}</b><span>${esc(texto)}</span>${accion ? '<div style="margin-top:14px">' + accion + '</div>' : ''}</div>`; }
 function pantallaMensaje(titulo, html, botones) {
-  root.innerHTML = `<div class="solo"><div class="solo-card rise">ILL.empty<h1>{esc(titulo)}</h1><p>html</p>{botones || ''}</div></div>`;
+  root.innerHTML = `<div class="solo"><div class="solo-card rise">${ILL.empty}<h1>${esc(titulo)}</h1><p>${html}</p>${botones || ''}</div></div>`;
 }
 
 /* =========================================================
@@ -538,7 +538,7 @@ function refrescarBoot() {
     const guardar = Object.assign({}, b); delete guardar.qrOk;
     LS.set('boot', guardar); aplicarBoot(b);
     if (viejoLogo !== APP.logo) $$('[data-logo]').forEach(el => { el.outerHTML = logoHtml(el.className); });
-    const dl = ('#dlAreas');if(dl)dl.innerHTML=(B.areas||[]).map(a=>`<optionvalue="{esc(a)}">`).join('');
+    const dl = $('#dlAreas'); if (dl) dl.innerHTML = (B.areas || []).map(a => `<option value="${esc(a)}">`).join('');
     return b;
   });
   return BOOT_P;
@@ -659,14 +659,14 @@ function ticketOk(r) {
     <div class="tk-badge">${pend
       ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><circle cx="12" cy="12" r="9" stroke-width="2"/><path class="draw" d="M12 7v5l3 2"/></svg>`
       : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path class="draw" d="M5 12.5l4.5 4.5L19 7.5"/></svg>`}</div>
-    <div class="tk-h"><h1>pend?'Registradaconobservación':'Asistenciaregistrada'</h1><p>{esc(sub)}</p></div>
+    <div class="tk-h"><h1>${pend ? 'Registrada con observación' : 'Asistencia registrada'}</h1><p>${esc(sub)}</p></div>
     <div class="ticket">
       <div class="tk-top">
         ${logoHtml('tk-logo')}
         <div class="tk-emp">${esc(APP.empresa || 'Control de asistencia')}</div>
         <div class="tk-name">${esc(r.nombre)}</div>
         <div class="muted" style="font-size:13px">${esc(r.area || '')}</div>
-        <div class="tk-tipo">ico(entrada?'in':'out','i-sm'){entrada ? 'ENTRADA' : 'SALIDA'}</div>
+        <div class="tk-tipo">${ico(entrada ? 'in' : 'out', 'i-sm')}${entrada ? 'ENTRADA' : 'SALIDA'}</div>
         <div class="tk-hora">${esc(r.hora)}</div>
         <div class="tk-fecha">${esc(fechaLarga(r.fecha))}</div>
       </div>
@@ -674,7 +674,7 @@ function ticketOk(r) {
       <div class="tk-stub">
         <div class="tk-det">
           <div><small>Estado</small>${estado}</div>
-          <div><small>pend?'Observación':'Ubicación'</small><b>{pend ? esc(cap((r.motivos || []).join(', '))) : (r.distancia !== '' && r.distancia != null ? 'A ' + esc(r.distancia) + ' m ✓' : 'Registrada ✓')}</b></div>
+          <div><small>${pend ? 'Observación' : 'Ubicación'}</small><b>${pend ? esc(cap((r.motivos || []).join(', '))) : (r.distancia !== '' && r.distancia != null ? 'A ' + esc(r.distancia) + ' m ✓' : 'Registrada ✓')}</b></div>
         </div>
       </div>
     </div>
@@ -699,7 +699,7 @@ function ticketRechazo(r, gps) {
     <div class="tk-h"><h1>Asistencia no registrada</h1><p>${esc(r.nombre)} · ${r.tipo === 'entrada' ? 'Entrada' : 'Salida'} ${esc(r.hora)}</p></div>
     <div class="ticket">
       <div class="tk-top" style="text-align:left">
-        <div class="tk-motivos">${(r.motivos || []).map(m => { const x = textoMotivo(m, r, gps); return `<div class="tk-motivo">${ico(m === 'fuera de horario' ? 'clock' : 'pin')}<div><b>esc(x.t)</b><small>{esc(x.s)}</small></div></div>`; }).join('')}</div>
+        <div class="tk-motivos">${(r.motivos || []).map(m => { const x = textoMotivo(m, r, gps); return `<div class="tk-motivo">${ico(m === 'fuera de horario' ? 'clock' : 'pin')}<div><b>${esc(x.t)}</b><small>${esc(x.s)}</small></div></div>`; }).join('')}</div>
       </div>
       <div class="tk-cutwrap"><div class="tk-cut"></div></div>
       <div class="tk-stub"><p class="muted" style="margin:0;font-size:14px">Si estás trabajando en otro lugar o en otro horario, regístrala igual: quedará con observación y tu encargada la aprobará o rechazará.</p></div>
@@ -743,7 +743,7 @@ function portal() {
       <div class="rise">${ILL.qr}</div>
       <h1 class="rise">Escanea el QR de la entrada</h1>
       <p class="rise">Abre la cámara de tu celular y apunta al QR "Registra tu asistencia". La primera vez te pedirá tu nombre, área y CI.</p>
-      <a class="btn btn-tonal btn-sm rise" href="esc(URLAPP)?v=admin">{ico('lock', 'i-sm')}Soy la encargada</a>
+      <a class="btn btn-tonal btn-sm rise" href="${esc(URL_APP)}?v=admin">${ico('lock', 'i-sm')}Soy la encargada</a>
     </div></div>`;
     rise(root); return;
   }
@@ -751,19 +751,19 @@ function portal() {
   if (!MIS.hasta) { MIS.hasta = hoy; MIS.desde = sumarDias(hoy, -30); }
   root.innerHTML = `<div class="wrap">
     <div class="top">
-      <div class="brand">logoHtml('lg')<div><b>{esc(APP.empresa || 'Asistencia')}</b><small>Mis asistencias</small></div></div>
+      <div class="brand">${logoHtml('lg')}<div><b>${esc(APP.empresa || 'Asistencia')}</b><small>Mis asistencias</small></div></div>
       <button class="ibtn" id="bRef" aria-label="Actualizar">${ico('refresh')}</button>
     </div>
     <div id="misHero"></div>
     <section class="sec">
       <div class="sec-h"><h3>Buscar por fecha</h3></div>
       <div class="chips" id="misChips">
-        ${[['hoy', 'Hoy'], ['7', '7 días'], ['30', '30 días'], ['mes', 'Este mes']].map(c => `<button class="chip MIS.rango===c[0]?'on':''"data-r="{c[0]}">${c[1]}</button>`).join('')}
+        ${[['hoy', 'Hoy'], ['7', '7 días'], ['30', '30 días'], ['mes', 'Este mes']].map(c => `<button class="chip ${MIS.rango === c[0] ? 'on' : ''}" data-r="${c[0]}">${c[1]}</button>`).join('')}
       </div>
       <div class="card" style="margin-top:8px;padding:16px">
         <div class="buscador">
-          <label class="field"><span>Desde</span><input type="date" class="inp" id="mDesde" value="esc(MIS.desde)"max="{hoy}"></label>
-          <label class="field"><span>Hasta</span><input type="date" class="inp" id="mHasta" value="esc(MIS.hasta)"max="{hoy}"></label>
+          <label class="field"><span>Desde</span><input type="date" class="inp" id="mDesde" value="${esc(MIS.desde)}" max="${hoy}"></label>
+          <label class="field"><span>Hasta</span><input type="date" class="inp" id="mHasta" value="${esc(MIS.hasta)}" max="${hoy}"></label>
           <button class="btn btn-primary" id="mBuscar" aria-label="Buscar" style="min-height:52px;padding:0 16px">${ico('search')}</button>
         </div>
       </div>
@@ -816,19 +816,19 @@ function renderMis(cargando) {
   hero.innerHTML = `<div class="hero rise">
     <small>Hola${yo.area ? ' · ' + esc(yo.area) : ''}</small>
     <div class="big" style="font-size:28px">${esc(yo.nombre + ' ' + yo.apellido)}</div>
-    <small>Horario esc(yo.entrada)–{esc(yo.salida)} · ${esc(diasTexto(yo.dias))}</small>
+    <small>Horario ${esc(yo.entrada)}–${esc(yo.salida)} · ${esc(diasTexto(yo.dias))}</small>
     <div class="hero-row">
-      <div class="hstat"><span class="ic">ico('calendar','i-sm')</span><div><b>{r.dias}</b><span>días</span></div></div>
-      <div class="hstat"><span class="ic">ico('clock','i-sm')</span><div><b>{esc(horas(r.minutos))}</b><span>trabajadas</span></div></div>
-      <div class="hstat"><span class="ic">ico('alert','i-sm')</span><div><b>{r.tardes}</b><span>tardanzas</span></div></div>
+      <div class="hstat"><span class="ic">${ico('calendar', 'i-sm')}</span><div><b>${r.dias}</b><span>días</span></div></div>
+      <div class="hstat"><span class="ic">${ico('clock', 'i-sm')}</span><div><b>${esc(horas(r.minutos))}</b><span>trabajadas</span></div></div>
+      <div class="hstat"><span class="ic">${ico('alert', 'i-sm')}</span><div><b>${r.tardes}</b><span>tardanzas</span></div></div>
     </div>
   </div>`;
   if (!d.dias.length) { lista.innerHTML = vacio('Sin registros en esas fechas', 'Prueba con otro rango o escanea el QR para registrar tu asistencia.'); return; }
   lista.innerHTML = d.dias.map(dia => `<div class="card dayc rise" style="margin-top:12px">
-    <div class="dh"><b>esc(fechaLarga(dia.fecha))</b>{dia.minutos ? `<span class="pill info plain">${esc(horas(dia.minutos))}</span>` : ''}</div>
+    <div class="dh"><b>${esc(fechaLarga(dia.fecha))}</b>${dia.minutos ? `<span class="pill info plain">${esc(horas(dia.minutos))}</span>` : ''}</div>
     ${dia.marcas.map(m => `<div class="marca">
-      <span class="mi m.tipo==='entrada'?'in':'out'">{ico(m.tipo === 'entrada' ? 'in' : 'out')}</span>
-      <div class="grow"><b>esc(m.hora)</b><small>{m.tipo === 'entrada' ? 'Entrada' : 'Salida'}${m.observacion ? ' · ' + esc(cap(m.observacion)) : ''}</small></div>
+      <span class="mi ${m.tipo === 'entrada' ? 'in' : 'out'}">${ico(m.tipo === 'entrada' ? 'in' : 'out')}</span>
+      <div class="grow"><b>${esc(m.hora)}</b><small>${m.tipo === 'entrada' ? 'Entrada' : 'Salida'}${m.observacion ? ' · ' + esc(cap(m.observacion)) : ''}</small></div>
       ${pillMarca(m)}
     </div>`).join('')}
   </div>`).join('');
@@ -961,8 +961,8 @@ function shellAdmin() {
   root.innerHTML = `<div class="app">
     <aside class="side">
       <div class="brand" id="sBrand"></div>
-      <nav id="sNav">${TABS.map(t => `<button data-tab="${t.id}">ico(t.i)<span>{t.t}</span>${t.id === 'revisar' ? '<span class="badge hide" data-badge></span>' : ''}</button>`).join('')}</nav>
-      <div class="foot"><div class="brand"><span class="av" style="background:colorDe((ADM.admin||).nombre||'A')">{esc(iniciales((ADM.admin || {}).nombre || 'A'))}</span><div style="min-width:0"><b style="font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">esc((ADM.admin||).nombre||'')</b><small>{esc((ADM.admin || {}).correo || '')}</small></div></div>
+      <nav id="sNav">${TABS.map(t => `<button data-tab="${t.id}">${ico(t.i)}<span>${t.t}</span>${t.id === 'revisar' ? '<span class="badge hide" data-badge></span>' : ''}</button>`).join('')}</nav>
+      <div class="foot"><div class="brand"><span class="av" style="background:${colorDe((ADM.admin || {}).nombre || 'A')}">${esc(iniciales((ADM.admin || {}).nombre || 'A'))}</span><div style="min-width:0"><b style="font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc((ADM.admin || {}).nombre || '')}</b><small>${esc((ADM.admin || {}).correo || '')}</small></div></div>
       <button class="btn btn-tonal btn-sm btn-block" style="margin-top:12px" data-act="salir">${ico('logout', 'i-sm')}Cerrar sesión</button></div>
     </aside>
     <div class="main">
@@ -973,8 +973,8 @@ function shellAdmin() {
       <main class="view" id="view"></main>
     </div>
     <nav class="bnav" id="bNav">${TABS.filter(t => !t.soloPc).map(t => t.fab
-      ? `<button data-tab="t.id"aria-label="{t.t}"><span class="fab">${ico(t.i)}</span></button>`
-      : `<button data-tab="t.id">{ico(t.i)}<span>t.t</span>{t.id === 'revisar' ? '<span class="badge hide" data-badge></span>' : ''}</button>`).join('')}</nav>
+      ? `<button data-tab="${t.id}" aria-label="${t.t}"><span class="fab">${ico(t.i)}</span></button>`
+      : `<button data-tab="${t.id}">${ico(t.i)}<span>${t.t}</span>${t.id === 'revisar' ? '<span class="badge hide" data-badge></span>' : ''}</button>`).join('')}</nav>
   </div>`;
   if (matchMedia('(min-width:1024px)').matches) $('#bAjM').classList.add('hide');
   renderBrand();
@@ -982,7 +982,7 @@ function shellAdmin() {
   marcarNav();
 }
 function renderBrand() {
-  const b = ('#sBrand');if(b)b.innerHTML=`{logoHtml('lg')}<div style="min-width:0"><b>${esc(APP.empresa || 'Asistencia QR')}</b><small>Panel de asistencia</small></div>`;
+  const b = $('#sBrand'); if (b) b.innerHTML = `${logoHtml('lg')}<div style="min-width:0"><b>${esc(APP.empresa || 'Asistencia QR')}</b><small>Panel de asistencia</small></div>`;
 }
 function marcarNav() {
   $$('[data-tab]').forEach(b => b.classList.toggle('on', b.dataset.tab === ADM.tab));
@@ -1012,7 +1012,7 @@ async function refrescarAdmin(forzar, avisar) {
     if (avisar) toast('Actualizado');
   } catch (e) {
     if (codigo(e) === 'AUTH') return salirAdmin(true);
-    if (!ADM.d) { const v = ('#view');if(v)v.innerHTML=vacio('Nosepudocargar',limpio(e.message),`<buttonclass="btnbtn-primary"data-act="refrescar">{ico('refresh')}Reintentar</button>`); }
+    if (!ADM.d) { const v = $('#view'); if (v) v.innerHTML = vacio('No se pudo cargar', limpio(e.message), `<button class="btn btn-primary" data-act="refrescar">${ico('refresh')}Reintentar</button>`); }
     else if (avisar || forzar) toast(limpio(e.message), true);
   } finally { ADM.cargando = false; }
 }
@@ -1065,16 +1065,16 @@ const VISTAS = {
             <div class="big">${k.presentes}<span style="font-size:22px;opacity:.7"> / ${k.programados}</span></div>
             <div class="barra" style="background:rgba(255,255,255,.18);margin-top:12px"><i style="width:${pct}%;background:#fff"></i></div>
             <div class="hero-row">
-              <div class="hstat"><span class="ic">ico('clock','i-sm')</span><div><b>{k.tarde}</b><span>llegaron tarde</span></div></div>
-              <div class="hstat"><span class="ic">ico('x','i-sm')</span><div><b>{k.ausentes}</b><span>ausentes</span></div></div>
+              <div class="hstat"><span class="ic">${ico('clock', 'i-sm')}</span><div><b>${k.tarde}</b><span>llegaron tarde</span></div></div>
+              <div class="hstat"><span class="ic">${ico('x', 'i-sm')}</span><div><b>${k.ausentes}</b><span>ausentes</span></div></div>
             </div>
           </section>
-          ${pend ? `<div class="alerta rise" style="margin-top:16px" data-tab="revisar"><span class="ic">${ico('alert')}</span><div class="grow">${pend} pend===1?'asistenciaespera':'asistenciasesperan'tuaprobación<small>Registradasfueradelugaruhorario</small></div>{ico('back', 'i-sm" style="transform:rotate(180deg)')}</div>` : ''}
+          ${pend ? `<div class="alerta rise" style="margin-top:16px" data-tab="revisar"><span class="ic">${ico('alert')}</span><div class="grow">${pend} ${pend === 1 ? 'asistencia espera' : 'asistencias esperan'} tu aprobación<small>Registradas fuera de lugar u horario</small></div>${ico('back', 'i-sm" style="transform:rotate(180deg)')}</div>` : ''}
           <div class="kpis rise" style="margin-top:16px">
             <div class="kpi"><span>En turno</span><b>${k.enTurno}</b></div>
             <div class="kpi"><span>Por llegar</span><b>${k.porLlegar}</b></div>
             <div class="kpi"><span>Equipo activo</span><b>${d.trabajadores.filter(t => t.activo).length}</b></div>
-            <div class="kpi"><span>Pendientes</span><b style="color:pend?'var(--warn)':'inherit'">{pend}</b></div>
+            <div class="kpi"><span>Pendientes</span><b style="color:${pend ? 'var(--warn)' : 'inherit'}">${pend}</b></div>
           </div>
           <section class="sec">
             <div class="sec-h"><h3>Asistencia de los últimos 14 días</h3></div>
@@ -1087,18 +1087,18 @@ const VISTAS = {
           <section class="card rise">
             <div class="sec-h"><h3>Quiénes llegan más tarde</h3><button class="link" data-tab="historial">Ver todo</button></div>
             <p class="muted" style="margin:-6px 0 8px;font-size:13px">Minutos de retraso en los últimos 14 días</p>
-            ${rank.length ? rank.map((t, i) => `<div class="row"><span class="rank r${i + 1}">i+1</span><divclass="grow"><b>{esc(t.nombre)}</b><small>${t.tardes} ${t.tardes === 1 ? 'tardanza' : 'tardanzas'} · esc(t.area||'')</small><divclass="barra"><istyle="width:{Math.round(t.minTarde / maxT * 100)}%"></i></div></div><div class="end"><b class="num">${esc(horas(t.minTarde))}</b></div></div>`).join('')
+            ${rank.length ? rank.map((t, i) => `<div class="row"><span class="rank r${i + 1}">${i + 1}</span><div class="grow"><b>${esc(t.nombre)}</b><small>${t.tardes} ${t.tardes === 1 ? 'tardanza' : 'tardanzas'} · ${esc(t.area || '')}</small><div class="barra"><i style="width:${Math.round(t.minTarde / maxT * 100)}%"></i></div></div><div class="end"><b class="num">${esc(horas(t.minTarde))}</b></div></div>`).join('')
               : vacio('Nadie llegó tarde', 'En los últimos 14 días todos llegaron a tiempo.')}
           </section>
         </div>
       </div>
       <section class="sec">
         <div class="sec-h"><h3>Lista de hoy</h3></div>
-        <div class="chips" id="fHoy">${filtros.map(f => `<button class="chip ADM.filtroHoy===f[0]?'on':''"data-act="filtroHoy"data-f="{f[0]}">f[1]<spanclass="n">{f[2]}</span></button>`).join('')}</div>
+        <div class="chips" id="fHoy">${filtros.map(f => `<button class="chip ${ADM.filtroHoy === f[0] ? 'on' : ''}" data-act="filtroHoy" data-f="${f[0]}">${f[1]} <span class="n">${f[2]}</span></button>`).join('')}</div>
         <div class="card rise" style="margin-top:8px;padding:8px 20px">
-          ${lista.length ? lista.map(x => `<div class="row tap" data-act="verTrab" data-id="${esc(x.id)}">av(x.nombre)<divclass="grow"><b>{esc(x.nombre)}</b><small>${esc(x.area || 'Sin área')} · ${esc(x.horario)}</small></div>
-            <div class="end"><span class="pill x.minTarde>0&&x.estado!=='ausente'?'warn':ESTADOPILL[x.estado]">{x.minTarde > 0 && x.estado !== 'ausente' ? x.minTarde + ' min tarde' : ESTADO_TXT[x.estado]}</span>
-            <small class="num">x.entrada?esc(x.entrada)+(x.salida?'→'+esc(x.salida):''):'—'{x.aprobacion === 'pendiente' ? ' · ⚠ obs.' : ''}</small></div></div>`).join('')
+          ${lista.length ? lista.map(x => `<div class="row tap" data-act="verTrab" data-id="${esc(x.id)}">${av(x.nombre)}<div class="grow"><b>${esc(x.nombre)}</b><small>${esc(x.area || 'Sin área')} · ${esc(x.horario)}</small></div>
+            <div class="end"><span class="pill ${x.minTarde > 0 && x.estado !== 'ausente' ? 'warn' : ESTADO_PILL[x.estado]}">${x.minTarde > 0 && x.estado !== 'ausente' ? x.minTarde + ' min tarde' : ESTADO_TXT[x.estado]}</span>
+            <small class="num">${x.entrada ? esc(x.entrada) + (x.salida ? ' → ' + esc(x.salida) : '') : '—'}${x.aprobacion === 'pendiente' ? ' · ⚠ obs.' : ''}</small></div></div>`).join('')
             : vacio('Nadie en este filtro', 'Prueba con otro filtro.')}
         </div>
       </section>`;
@@ -1110,19 +1110,19 @@ const VISTAS = {
     const f = ADM.f, d = ADM.d;
     const areas = [...new Set(d.trabajadores.map(t => t.area).filter(Boolean))].sort();
     v.innerHTML = `
-      <div class="chips rise" id="hChips">${[['hoy', 'Hoy'], ['7', '7 días'], ['30', '30 días'], ['mes', 'Este mes']].map(c => `<button class="chip f.rango===c[0]?'on':''"data-act="hRango"data-r="{c[0]}">${c[1]}</button>`).join('')}</div>
+      <div class="chips rise" id="hChips">${[['hoy', 'Hoy'], ['7', '7 días'], ['30', '30 días'], ['mes', 'Este mes']].map(c => `<button class="chip ${f.rango === c[0] ? 'on' : ''}" data-act="hRango" data-r="${c[0]}">${c[1]}</button>`).join('')}</div>
       <div class="card rise" style="margin-top:8px">
         <div class="grid2">
-          <label class="field"><span>Desde</span><input type="date" class="inp" id="hDesde" value="esc(f.desde)"max="{hoy}"></label>
-          <label class="field"><span>Hasta</span><input type="date" class="inp" id="hHasta" value="esc(f.hasta)"max="{hoy}"></label>
+          <label class="field"><span>Desde</span><input type="date" class="inp" id="hDesde" value="${esc(f.desde)}" max="${hoy}"></label>
+          <label class="field"><span>Hasta</span><input type="date" class="inp" id="hHasta" value="${esc(f.hasta)}" max="${hoy}"></label>
         </div>
         <div class="grid2">
-          <label class="field"><span>Trabajador</span><select class="inp" id="hTrab"><option value="">Todos</option>${d.trabajadores.slice().sort((a, b) => (a.nombre > b.nombre ? 1 : -1)).map(t => `<option value="${esc(t.id)}" f.trabajadorId===t.id?'selected':''>{esc(t.nombre + ' ' + t.apellido)}</option>`).join('')}</select></label>
-          <label class="field"><span>Área</span><select class="inp" id="hArea"><option value="">Todas</option>${areas.map(a => `<option f.area===a?'selected':''>{esc(a)}</option>`).join('')}</select></label>
+          <label class="field"><span>Trabajador</span><select class="inp" id="hTrab"><option value="">Todos</option>${d.trabajadores.slice().sort((a, b) => (a.nombre > b.nombre ? 1 : -1)).map(t => `<option value="${esc(t.id)}" ${f.trabajadorId === t.id ? 'selected' : ''}>${esc(t.nombre + ' ' + t.apellido)}</option>`).join('')}</select></label>
+          <label class="field"><span>Área</span><select class="inp" id="hArea"><option value="">Todas</option>${areas.map(a => `<option ${f.area === a ? 'selected' : ''}>${esc(a)}</option>`).join('')}</select></label>
         </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
           <button class="btn btn-primary" data-act="hBuscar">${ico('search')}Buscar</button>
-          <button class="btn btn-tonal" data-act="hCsv" ADM.rep?'':'disabled'>{ico('file')}Exportar CSV</button>
+          <button class="btn btn-tonal" data-act="hCsv" ${ADM.rep ? '' : 'disabled'}>${ico('file')}Exportar CSV</button>
         </div>
       </div>
       <div id="hRes"></div>`;
@@ -1137,20 +1137,20 @@ const VISTAS = {
     v.innerHTML = `
       <p class="muted rise" style="margin:0 0 12px">Asistencias registradas fuera de lugar u horario. Aprueba para que cuenten como asistencia; rechaza para anularlas.</p>
       <div class="chips rise">
-        <button class="chip ADM.obsTab==='pendientes'?'on':''"data-act="obsTab"data-t="pendientes">Pendientes<spanclass="n">{pend.length}</span></button>
-        <button class="chip ADM.obsTab==='revisadas'?'on':''"data-act="obsTab"data-t="revisadas">Revisadas<spanclass="n">{rev.length}</span></button>
+        <button class="chip ${ADM.obsTab === 'pendientes' ? 'on' : ''}" data-act="obsTab" data-t="pendientes">Pendientes <span class="n">${pend.length}</span></button>
+        <button class="chip ${ADM.obsTab === 'revisadas' ? 'on' : ''}" data-act="obsTab" data-t="revisadas">Revisadas <span class="n">${rev.length}</span></button>
       </div>
       <div class="grid-obs" style="margin-top:8px">
       ${lista.length ? lista.map(o => `<div class="card obs rise" ${''}>
-        <div class="oh">av(o.nombre)<divstyle="flex:1;min-width:0"><bstyle="display:block">{esc(o.nombre)}</b><small class="muted">${esc(o.area || '')} · ${esc(fechaCorta(o.fecha))}</small></div>
-          <div style="text-align:right"><b class="num" style="font-size:20px">esc(o.hora)</b><smallclass="muted"style="display:block">{o.tipo === 'entrada' ? 'Entrada' : 'Salida'}</small></div></div>
-        <div class="meta">${String(o.observacion).split(', ').map(m => `<span class="pill m==='fueradehorario'?'warn':'bad'">{esc(cap(m))}</span>`).join('')}
+        <div class="oh">${av(o.nombre)}<div style="flex:1;min-width:0"><b style="display:block">${esc(o.nombre)}</b><small class="muted">${esc(o.area || '')} · ${esc(fechaCorta(o.fecha))}</small></div>
+          <div style="text-align:right"><b class="num" style="font-size:20px">${esc(o.hora)}</b><small class="muted" style="display:block">${o.tipo === 'entrada' ? 'Entrada' : 'Salida'}</small></div></div>
+        <div class="meta">${String(o.observacion).split(', ').map(m => `<span class="pill ${m === 'fuera de horario' ? 'warn' : 'bad'}">${esc(cap(m))}</span>`).join('')}
           ${o.distancia !== '' && o.distancia != null ? `<span class="pill plain">${ico('pin', 'i-sm')} a ${esc(o.distancia)} m</span>` : ''}
-          ${o.aprobacion !== 'pendiente' ? `<span class="pill o.aprobacion==='aprobado'?'ok':'bad'">{o.aprobacion === 'aprobado' ? 'Aprobada' : 'Rechazada'}${o.revisadoPor ? ' · ' + esc(o.revisadoPor) : ''}</span>` : ''}</div>
+          ${o.aprobacion !== 'pendiente' ? `<span class="pill ${o.aprobacion === 'aprobado' ? 'ok' : 'bad'}">${o.aprobacion === 'aprobado' ? 'Aprobada' : 'Rechazada'}${o.revisadoPor ? ' · ' + esc(o.revisadoPor) : ''}</span>` : ''}</div>
         ${o.nota ? `<p style="margin:0 0 12px;font-size:14px;background:var(--tonal);padding:10px 12px;border-radius:12px">“${esc(o.nota)}”</p>` : ''}
         <div class="acts">${o.aprobacion === 'pendiente'
-          ? `<button class="btn btn-danger" data-act="revisar" data-id="esc(o.id)"data-dec="rechazado">{ico('x')}Rechazar</button><button class="btn btn-ok" data-act="revisar" data-id="esc(o.id)"data-dec="aprobado">{ico('check')}Aprobar</button>`
-          : `<button class="btn btn-tonal btn-sm" style="grid-column:1/-1" data-act="revisar" data-id="esc(o.id)"data-dec="{o.aprobacion === 'aprobado' ? 'rechazado' : 'aprobado'}">Cambiar a ${o.aprobacion === 'aprobado' ? 'rechazada' : 'aprobada'}</button>`}</div>
+          ? `<button class="btn btn-danger" data-act="revisar" data-id="${esc(o.id)}" data-dec="rechazado">${ico('x')}Rechazar</button><button class="btn btn-ok" data-act="revisar" data-id="${esc(o.id)}" data-dec="aprobado">${ico('check')}Aprobar</button>`
+          : `<button class="btn btn-tonal btn-sm" style="grid-column:1/-1" data-act="revisar" data-id="${esc(o.id)}" data-dec="${o.aprobacion === 'aprobado' ? 'rechazado' : 'aprobado'}">Cambiar a ${o.aprobacion === 'aprobado' ? 'rechazada' : 'aprobada'}</button>`}</div>
       </div>`).join('') : `<div class="card" style="grid-column:1/-1">${vacio(ADM.obsTab === 'pendientes' ? 'Todo al día' : 'Aún no revisaste ninguna', ADM.obsTab === 'pendientes' ? 'No hay asistencias esperando aprobación.' : 'Las que apruebes o rechaces aparecerán aquí.')}</div>`}
       </div>`;
   },
@@ -1160,13 +1160,13 @@ const VISTAS = {
     const areas = [...new Set(d.trabajadores.map(t => t.area).filter(Boolean))].sort();
     v.innerHTML = `
       <div style="display:flex;gap:10px;flex-wrap:wrap" class="rise">
-        <div style="position:relative;flex:1;min-width:220px"><input class="inp" id="eBuscar" placeholder="Buscar por nombre o CI" value="esc(ADM.buscar)"aria-label="Buscartrabajador"style="padding-left:44px"><spanstyle="position:absolute;left:14px;top:16px;color:var(--muted)">{ico('search')}</span></div>
+        <div style="position:relative;flex:1;min-width:220px"><input class="inp" id="eBuscar" placeholder="Buscar por nombre o CI" value="${esc(ADM.buscar)}" aria-label="Buscar trabajador" style="padding-left:44px"><span style="position:absolute;left:14px;top:16px;color:var(--muted)">${ico('search')}</span></div>
         <button class="btn btn-primary" data-act="nuevoTrab">${ico('plus')}Nuevo</button>
         <button class="btn btn-tonal" data-act="horarioArea">${ico('clock')}Horario por área</button>
       </div>
       <div class="chips rise" style="margin-top:12px">
         <button class="chip ${!ADM.areaF ? 'on' : ''}" data-act="areaF" data-a="">Todas</button>
-        ${areas.map(a => `<button class="chip ADM.areaF===a?'on':''"data-act="areaF"data-a="{esc(a)}">esc(a)<spanclass="n">{d.trabajadores.filter(t => t.area === a && t.activo).length}</span></button>`).join('')}
+        ${areas.map(a => `<button class="chip ${ADM.areaF === a ? 'on' : ''}" data-act="areaF" data-a="${esc(a)}">${esc(a)} <span class="n">${d.trabajadores.filter(t => t.area === a && t.activo).length}</span></button>`).join('')}
       </div>
       <p class="muted rise" style="font-size:13px;margin:6px 0 10px">Los trabajadores se registran solos la primera vez que escanean el QR. Aquí ajustas su horario a tu gusto.</p>
       <div class="card rise" style="padding:8px 20px" id="eLista"></div>`;
@@ -1183,7 +1183,7 @@ const VISTAS = {
         <div>
           <section class="card rise">
             <div class="set-row"><span class="ic">${ico('pin')}</span><div><h3>Ubicación del trabajo</h3><p>Solo se acepta la asistencia dentro de este radio.</p></div></div>
-            <div class="coord"><div><small>Latitud</small><b id="cLat">c.lat!==''?esc(c.lat):'—'</b></div><div><small>Longitud</small><bid="cLng">{c.lng !== '' ? esc(c.lng) : '—'}</b></div><div><small>Precisión</small><b id="cAcc">—</b></div></div>
+            <div class="coord"><div><small>Latitud</small><b id="cLat">${c.lat !== '' ? esc(c.lat) : '—'}</b></div><div><small>Longitud</small><b id="cLng">${c.lng !== '' ? esc(c.lng) : '—'}</b></div><div><small>Precisión</small><b id="cAcc">—</b></div></div>
             <button class="btn btn-primary btn-block" data-act="aquiUbicacion" style="min-height:54px">${ico('locate')}Registrar: aquí es la ubicación</button>
             <label class="field" style="margin-top:14px"><span>Radio permitido (metros)</span><input class="inp" type="number" inputmode="numeric" min="20" max="5000" id="cRadio" value="${esc(c.radio)}"></label>
             <div style="display:flex;gap:10px;flex-wrap:wrap">
@@ -1198,7 +1198,7 @@ const VISTAS = {
             <div style="display:flex;gap:16px;align-items:center;margin-top:14px">
               <div class="logo-box">${c.logo ? `<img src="${esc(c.logo)}" alt="Logo actual">` : ico('image', 'i-lg')}</div>
               <div style="display:flex;flex-direction:column;gap:8px">
-                <label class="btn btn-primary btn-sm" style="cursor:pointer">ico('image','i-sm'){c.logo ? 'Cambiar logo' : 'Subir logo'}<input type="file" accept="image/*" id="fLogo" class="hide"></label>
+                <label class="btn btn-primary btn-sm" style="cursor:pointer">${ico('image', 'i-sm')}${c.logo ? 'Cambiar logo' : 'Subir logo'}<input type="file" accept="image/*" id="fLogo" class="hide"></label>
                 ${c.logo ? `<button class="btn btn-danger btn-sm" data-act="quitarLogo">${ico('trash', 'i-sm')}Quitar</button>` : ''}
               </div>
             </div>
@@ -1209,18 +1209,18 @@ const VISTAS = {
             <div class="set-row"><span class="ic">${ico('building')}</span><div><h3>Empresa y horario por defecto</h3><p>El horario por defecto se asigna a quien se registre en un área nueva.</p></div></div>
             <form id="fCfg" style="margin-top:14px" novalidate>
               <label class="field"><span>Nombre de la empresa</span><input class="inp" name="empresa" maxlength="60" value="${esc(c.empresa)}"></label>
-              <label class="field"><span>País (zona horaria)</span><select class="inp" name="pais">${paises.map(p => `<option value="${esc(p[0])}" p[0]===c.pais?'selected':''>{esc(p[1])}</option>`).join('')}</select></label>
+              <label class="field"><span>País (zona horaria)</span><select class="inp" name="pais">${paises.map(p => `<option value="${esc(p[0])}" ${p[0] === c.pais ? 'selected' : ''}>${esc(p[1])}</option>`).join('')}</select></label>
               <div class="grid2">
                 <label class="field"><span>Entrada</span><input class="inp" type="time" name="entradaDef" value="${esc(c.entradaDef)}"></label>
                 <label class="field"><span>Salida</span><input class="inp" type="time" name="salidaDef" value="${esc(c.salidaDef)}"></label>
               </div>
-              <div class="field"><span>Días de trabajo</span><div class="dias" id="dDef">${[1, 2, 3, 4, 5, 6, 7].map(n => `<button type="button" class="dia dDef.includes(String(n))?'on':''"data-d="{n}" aria-label="DIASL[n]">{DIAS[n]}</button>`).join('')}</div></div>
+              <div class="field"><span>Días de trabajo</span><div class="dias" id="dDef">${[1, 2, 3, 4, 5, 6, 7].map(n => `<button type="button" class="dia ${dDef.includes(String(n)) ? 'on' : ''}" data-d="${n}" aria-label="${DIAS_L[n]}">${DIAS[n]}</button>`).join('')}</div></div>
               <label class="field"><span>Tolerancia de llegada (minutos)</span><input class="inp" type="number" inputmode="numeric" min="0" max="120" name="tolerancia" value="${esc(c.tolerancia)}"></label>
               <button class="btn btn-primary btn-block">${ico('check')}Guardar</button>
             </form>
           </section>
           <section class="card rise">
-            <div class="set-row"><span class="ic">ico('lock')</span><div><h3>Contraseña</h3><p>{esc((ADM.admin || {}).correo || '')}</p></div></div>
+            <div class="set-row"><span class="ic">${ico('lock')}</span><div><h3>Contraseña</h3><p>${esc((ADM.admin || {}).correo || '')}</p></div></div>
             <form id="fPw" style="margin-top:14px" novalidate>
               <label class="field"><span>Contraseña actual</span><input class="inp" type="password" name="actual" autocomplete="current-password"></label>
               <label class="field"><span>Nueva contraseña (mín. 6)</span><input class="inp" type="password" name="nueva" autocomplete="new-password"></label>
@@ -1229,7 +1229,7 @@ const VISTAS = {
           </section>
           <section class="card rise">
             <div class="set-row"><span class="ic">${ico('phone')}</span><div><h3>Link para trabajadores</h3><p>Su portal "Mis asistencias" (solo lectura).</p></div></div>
-            <div style="display:flex;gap:10px;margin-top:14px"><input class="inp" readonly value="esc(URLAPP)"aria-label="Linkdelportal"><buttonclass="ibtn"data-act="copiarLink"aria-label="Copiarlink">{ico('copy')}</button></div>
+            <div style="display:flex;gap:10px;margin-top:14px"><input class="inp" readonly value="${esc(URL_APP)}" aria-label="Link del portal"><button class="ibtn" data-act="copiarLink" aria-label="Copiar link">${ico('copy')}</button></div>
             <button class="btn btn-danger btn-block" style="margin-top:16px" data-act="salir">${ico('logout')}Cerrar sesión</button>
           </section>
         </div>
@@ -1248,9 +1248,9 @@ const VISTAS = {
         <div>
           <section class="card rise">
             <div class="set-row"><span class="ic">${ico('qr')}</span><div><h3>Afiche "Registra tu asistencia"</h3><p>Imprímelo y déjalo en la entrada. Sirve hasta que lo renueves.</p></div></div>
-            <div class="field" style="margin-top:16px"><span>Tamaño</span><div class="chips">${Object.keys(TAMANOS).map(k => `<button class="chip ADM.qrSize===k?'on':''"data-act="qrSize"data-k="{k}">${TAMANOS[k].n}</button>`).join('')}</div></div>
-            <div class="field"><span>Formato</span><div class="chips">${['png', 'jpg'].map(k => `<button class="chip ADM.qrFmt===k?'on':''"data-act="qrFmt"data-k="{k}">${k.toUpperCase()}</button>`).join('')}</div></div>
-            <div class="grid2"><button class="btn btn-primary" data-act="qrDescargar">ico('download')Descargar</button><buttonclass="btnbtn-tonal"data-act="qrImprimir">{ico('printer')}Imprimir</button></div>
+            <div class="field" style="margin-top:16px"><span>Tamaño</span><div class="chips">${Object.keys(TAMANOS).map(k => `<button class="chip ${ADM.qrSize === k ? 'on' : ''}" data-act="qrSize" data-k="${k}">${TAMANOS[k].n}</button>`).join('')}</div></div>
+            <div class="field"><span>Formato</span><div class="chips">${['png', 'jpg'].map(k => `<button class="chip ${ADM.qrFmt === k ? 'on' : ''}" data-act="qrFmt" data-k="${k}">${k.toUpperCase()}</button>`).join('')}</div></div>
+            <div class="grid2"><button class="btn btn-primary" data-act="qrDescargar">${ico('download')}Descargar</button><button class="btn btn-tonal" data-act="qrImprimir">${ico('printer')}Imprimir</button></div>
             <p class="muted" style="font-size:13px;margin:12px 0 0">Alta resolución (300 dpi) en ${esc(TAMANOS[ADM.qrSize].n)}: ${TAMANOS[ADM.qrSize].w} × ${TAMANOS[ADM.qrSize].h} mm.</p>
           </section>
           <section class="card rise">
@@ -1259,7 +1259,7 @@ const VISTAS = {
           </section>
           <section class="card rise">
             <div class="set-row"><span class="ic">${ico('copy')}</span><div><h3>Link del QR</h3><p>Lo que abre el QR. No lo compartas por chat: se registraría la asistencia desde cualquier lugar (con observación).</p></div></div>
-            <div style="display:flex;gap:10px;margin-top:14px"><input class="inp" readonly value="esc(linkQR())"aria-label="LinkdelQR"><buttonclass="ibtn"data-act="copiarQR"aria-label="CopiarlinkdelQR">{ico('copy')}</button></div>
+            <div style="display:flex;gap:10px;margin-top:14px"><input class="inp" readonly value="${esc(linkQR())}" aria-label="Link del QR"><button class="ibtn" data-act="copiarQR" aria-label="Copiar link del QR">${ico('copy')}</button></div>
           </section>
         </div>
       </div>`;
@@ -1278,12 +1278,12 @@ function graficoBarras(serie) {
     const y = H - pb - hT;
     const dow = fechaDate(s.fecha).getUTCDay();
     return `<g><title>${esc(fechaCorta(s.fecha))}: ${s.presentes} presentes, ${s.tarde} tarde, ${s.faltas} faltas</title>
-      ${hT > 0 ? `<rect x="${x}" y="y"width="{w}" height="hT"rx="6"fill="#151A56"/>`:`<rectx="{x}" y="H-pb-3"width="{w}" height="3" rx="1.5" fill="#E2E8F0"/>`}
-      ${hTarde > 0 ? `<rect x="${x}" y="y"width="{w}" height="${Math.max(4, hTarde)}" rx="6" fill="#F59E0B"/>` : ''}
-      <text x="x+w/2"y="{H - 8}" text-anchor="middle" font-size="12" fill="dow===0||dow===6?'#CBD5E1':'#64748B'"font-family="PlusJakartaSans">{DIAS[dow === 0 ? 7 : dow]}</text>
-      ${s.presentes ? `<text x="${x + w / 2}" y="y-4"text-anchor="middle"font-size="11"font-weight="700"fill="#0F172A"font-family="PlusJakartaSans">{s.presentes}</text>` : ''}</g>`;
+      ${hT > 0 ? `<rect x="${x}" y="${y}" width="${w}" height="${hT}" rx="6" fill="#151A56"/>` : `<rect x="${x}" y="${H - pb - 3}" width="${w}" height="3" rx="1.5" fill="#E2E8F0"/>`}
+      ${hTarde > 0 ? `<rect x="${x}" y="${y}" width="${w}" height="${Math.max(4, hTarde)}" rx="6" fill="#F59E0B"/>` : ''}
+      <text x="${x + w / 2}" y="${H - 8}" text-anchor="middle" font-size="12" fill="${dow === 0 || dow === 6 ? '#CBD5E1' : '#64748B'}" font-family="Plus Jakarta Sans">${DIAS[dow === 0 ? 7 : dow]}</text>
+      ${s.presentes ? `<text x="${x + w / 2}" y="${y - 4}" text-anchor="middle" font-size="11" font-weight="700" fill="#0F172A" font-family="Plus Jakarta Sans">${s.presentes}</text>` : ''}</g>`;
   }).join('');
-  return `<svg class="bars" viewBox="0 0 ${W} H"role="img"aria-label="Asistenciapordía">{bars}</svg>`;
+  return `<svg class="bars" viewBox="0 0 ${W} ${H}" role="img" aria-label="Asistencia por día">${bars}</svg>`;
 }
 
 function renderEquipo() {
@@ -1292,8 +1292,8 @@ function renderEquipo() {
   const lista = ADM.d.trabajadores.filter(t => (!ADM.areaF || t.area === ADM.areaF) &&
     (!q || (t.nombre + ' ' + t.apellido + ' ' + t.ci).toLowerCase().includes(q)))
     .sort((a, b) => (a.activo === b.activo ? ((a.nombre + a.apellido) > (b.nombre + b.apellido) ? 1 : -1) : a.activo ? -1 : 1));
-  el.innerHTML = lista.length ? lista.map(t => `<div class="row tap" data-act="verTrab" data-id="esc(t.id)"style="{t.activo ? '' : 'opacity:.55'}">
-      av(t.nombre+''+t.apellido)<divclass="grow"><b>{esc(t.nombre + ' ' + t.apellido)}</b><small>${esc(t.area || 'Sin área')} · esc(t.entrada)–{esc(t.salida)} · ${esc(diasTexto(t.dias))}</small></div>
+  el.innerHTML = lista.length ? lista.map(t => `<div class="row tap" data-act="verTrab" data-id="${esc(t.id)}" style="${t.activo ? '' : 'opacity:.55'}">
+      ${av(t.nombre + ' ' + t.apellido)}<div class="grow"><b>${esc(t.nombre + ' ' + t.apellido)}</b><small>${esc(t.area || 'Sin área')} · ${esc(t.entrada)}–${esc(t.salida)} · ${esc(diasTexto(t.dias))}</small></div>
       <div class="end">${!t.activo ? '<span class="pill plain">Inactivo</span>' : t.vinculado ? `<span class="pill ok">${ico('phone', 'i-sm')}Celular</span>` : '<span class="pill plain">Sin celular</span>'}<small>CI ${esc(t.ci || '—')}</small></div></div>`).join('')
     : vacio('Sin trabajadores', q ? 'Nadie coincide con la búsqueda.' : 'Cuando escaneen el QR por primera vez aparecerán aquí.');
 }
@@ -1339,7 +1339,7 @@ const ACTS = {
     el.disabled = false; el.innerHTML = ico('locate', 'i-sm') + 'Probar mi distancia';
     if (g.error) { toast(g.error, true); return; }
     const dist = Math.round(metros(g.lat, g.lng, Number(c.lat), Number(c.lng)));
-    toast(`Estás a distm(precisión±{Math.round(g.acc)} m) · ${dist - Math.min(g.acc, 100) <= c.radio ? 'dentro del radio ✓' : 'fuera del radio'}`, dist - Math.min(g.acc, 100) > c.radio);
+    toast(`Estás a ${dist} m (precisión ±${Math.round(g.acc)} m) · ${dist - Math.min(g.acc, 100) <= c.radio ? 'dentro del radio ✓' : 'fuera del radio'}`, dist - Math.min(g.acc, 100) > c.radio);
   },
   quitarLogo: () => confirmar('Quitar logo', 'El ticket y el afiche mostrarán las iniciales de la empresa.', 'Quitar', true).then(ok => { if (ok) guardarLogo(''); }),
   copiarLink: () => copiar(URL_APP),
@@ -1390,17 +1390,17 @@ function editarTrabajador(t) {
         <label class="field"><span>Apellido</span><input class="inp" name="apellido" value="${esc(t.apellido)}" required></label>
       </div>
       <div class="grid2">
-        <label class="field"><span>Área</span><input class="inp" name="area" list="dlA2" value="esc(t.area)"><datalistid="dlA2">{areas.map(a => `<option value="${esc(a)}">`).join('')}</datalist></label>
+        <label class="field"><span>Área</span><input class="inp" name="area" list="dlA2" value="${esc(t.area)}"><datalist id="dlA2">${areas.map(a => `<option value="${esc(a)}">`).join('')}</datalist></label>
         <label class="field"><span>CI</span><input class="inp" name="ci" value="${esc(t.ci)}"></label>
       </div>
       <div class="grid2">
         <label class="field"><span>Hora de entrada</span><input class="inp" type="time" name="entrada" value="${esc(t.entrada)}" required></label>
         <label class="field"><span>Hora de salida</span><input class="inp" type="time" name="salida" value="${esc(t.salida)}" required></label>
       </div>
-      <div class="field"><span>Días de trabajo</span><div class="dias" id="dTrab">${[1, 2, 3, 4, 5, 6, 7].map(n => `<button type="button" class="dia ds.includes(String(n))?'on':''"data-d="{n}" aria-label="DIASL[n]">{DIAS[n]}</button>`).join('')}</div></div>
+      <div class="field"><span>Días de trabajo</span><div class="dias" id="dTrab">${[1, 2, 3, 4, 5, 6, 7].map(n => `<button type="button" class="dia ${ds.includes(String(n)) ? 'on' : ''}" data-d="${n}" aria-label="${DIAS_L[n]}">${DIAS[n]}</button>`).join('')}</div></div>
       ${nuevo ? '' : `<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px">
         ${t.vinculado ? `<button type="button" class="btn btn-tonal btn-sm" data-acc="desvincular">${ico('unlink', 'i-sm')}Desvincular celular</button>` : '<span class="pill plain">Sin celular vinculado</span>'}
-        <button type="button" class="btn t.activo?'btn-danger':'btn-tonal'btn-sm"data-acc="{t.activo ? 'desactivar' : 'activar'}">${t.activo ? ico('x', 'i-sm') + 'Desactivar' : ico('check', 'i-sm') + 'Activar'}</button>
+        <button type="button" class="btn ${t.activo ? 'btn-danger' : 'btn-tonal'} btn-sm" data-acc="${t.activo ? 'desactivar' : 'activar'}">${t.activo ? ico('x', 'i-sm') + 'Desactivar' : ico('check', 'i-sm') + 'Activar'}</button>
         <button type="button" class="btn btn-tonal btn-sm" data-acc="historial">${ico('history', 'i-sm')}Ver historial</button>
       </div>`}
     </form>`, `<button class="btn btn-tonal" data-x2>Cancelar</button><button class="btn btn-primary" data-save>${ico('check')}Guardar</button>`);
@@ -1477,7 +1477,7 @@ function sheetHorarioArea() {
       <label class="field"><span>Entrada</span><input class="inp" type="time" id="haEnt" value="${esc(base.entrada || c.entradaDef)}"></label>
       <label class="field"><span>Salida</span><input class="inp" type="time" id="haSal" value="${esc(base.salida || c.salidaDef)}"></label>
     </div>
-    <div class="field"><span>Días de trabajo</span><div class="dias" id="haDias">${[1, 2, 3, 4, 5, 6, 7].map(n => `<button type="button" class="dia ds.includes(String(n))?'on':''"data-d="{n}" aria-label="DIASL[n]">{DIAS[n]}</button>`).join('')}</div></div>
+    <div class="field"><span>Días de trabajo</span><div class="dias" id="haDias">${[1, 2, 3, 4, 5, 6, 7].map(n => `<button type="button" class="dia ${ds.includes(String(n)) ? 'on' : ''}" data-d="${n}" aria-label="${DIAS_L[n]}">${DIAS[n]}</button>`).join('')}</div></div>
     <p class="muted" id="haCuenta" style="font-size:13px"></p>`,
     `<button class="btn btn-tonal" data-x2>Cancelar</button><button class="btn btn-primary" data-apl>${ico('check')}Aplicar</button>`);
   const cuenta = () => { const a = $('#haArea', w).value; const n = ADM.d.trabajadores.filter(t => t.activo && t.area === a).length; $('#haCuenta', w).textContent = `Se aplicará a ${n} ${n === 1 ? 'trabajador' : 'trabajadores'}.`; };
@@ -1535,10 +1535,10 @@ function renderHistorial() {
     </div>
     <section class="sec"><div class="sec-h"><h3>Resumen por trabajador</h3><span class="muted" style="font-size:13px">Ordenado por retraso</span></div>
       <div class="card rise"><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Trabajador</th><th>Días</th><th>Horas</th><th>Tardanzas</th><th>Retraso</th><th>Faltas</th><th>Obs.</th></tr></thead><tbody>
-      ${tot.length ? tot.map(t => `<tr><td><b>${esc(t.nombre)}</b><br><small class="muted">esc(t.area||'')</small></td><tdclass="num">{t.dias}</td><td class="num">esc(horas(t.minutos))</td><tdclass="num">{t.tardes}</td><td class="num">t.minTarde?esc(horas(t.minTarde)):'—'</td><tdclass="num">{t.faltas}</td><td class="num">t.observadas||'—'</td></tr>`).join(''):`<tr><tdcolspan="7">{vacio('Sin datos', 'No hay registros en ese rango.')}</td></tr>`}
+      ${tot.length ? tot.map(t => `<tr><td><b>${esc(t.nombre)}</b><br><small class="muted">${esc(t.area || '')}</small></td><td class="num">${t.dias}</td><td class="num">${esc(horas(t.minutos))}</td><td class="num">${t.tardes}</td><td class="num">${t.minTarde ? esc(horas(t.minTarde)) : '—'}</td><td class="num">${t.faltas}</td><td class="num">${t.observadas || '—'}</td></tr>`).join('') : `<tr><td colspan="7">${vacio('Sin datos', 'No hay registros en ese rango.')}</td></tr>`}
       </tbody></table></div></div></section>
     <section class="sec"><div class="sec-h"><h3>Detalle por día</h3><span class="muted" style="font-size:13px">${r.dias.length} registros</span></div>
-      <div class="card rise" style="padding:8px 20px">${r.dias.length ? r.dias.slice(0, 400).map(x => `<div class="row">${av(x.nombre)}<div class="grow"><b>esc(x.nombre)</b><small>{esc(fechaCorta(x.fecha))}x.area?'·'+esc(x.area):''{x.observacion ? ' · ' + esc(cap(x.observacion)) : ''}</small></div>
+      <div class="card rise" style="padding:8px 20px">${r.dias.length ? r.dias.slice(0, 400).map(x => `<div class="row">${av(x.nombre)}<div class="grow"><b>${esc(x.nombre)}</b><small>${esc(fechaCorta(x.fecha))}${x.area ? ' · ' + esc(x.area) : ''}${x.observacion ? ' · ' + esc(cap(x.observacion)) : ''}</small></div>
         <div class="end">${x.falta ? '<span class="pill bad">Falta</span>' : x.aprobacion === 'pendiente' ? '<span class="pill warn">Por aprobar</span>' : x.minTarde > 0 ? `<span class="pill warn">${x.minTarde} min tarde</span>` : x.enCurso ? '<span class="pill ok">En turno</span>' : '<span class="pill ok">A tiempo</span>'}
         <small class="num">${x.falta ? '—' : esc(x.entrada || '¿?') + ' → ' + esc(x.salida || (x.enCurso ? 'en turno' : '¿?')) + (x.minutos ? ' · ' + esc(horas(x.minutos)) : '')}</small></div></div>`).join('') : vacio('Sin registros', 'No hay asistencias en ese rango.')}
       ${r.dias.length > 400 ? '<p class="muted" style="font-size:13px">Se muestran 400. Exporta el CSV para ver todo.</p>' : ''}</div></section>`;
@@ -1803,7 +1803,7 @@ async function descargarAfiche(btn) {
     const tipo = ADM.qrFmt === 'jpg' ? 'image/jpeg' : 'image/png';
     const blob = await new Promise(res => cv.toBlob(res, tipo, 0.95));
     if (!blob) throw new Error('El navegador no pudo generar la imagen.');
-    bajar(blob, `QR-asistencia-ADM.qrSize-v{ADM.d.config.versionQR}.${ADM.qrFmt}`);
+    bajar(blob, `QR-asistencia-${ADM.qrSize}-v${ADM.d.config.versionQR}.${ADM.qrFmt}`);
     toast('Afiche descargado');
   } catch (e) { toast(e.message, true); }
   finally { btn.disabled = false; btn.innerHTML = html; }
@@ -1831,4 +1831,3 @@ arrancar();
 </script>
 </body>
 </html>
-
